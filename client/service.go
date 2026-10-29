@@ -53,6 +53,12 @@ func init() {
 	if os.Getenv("QUIC_GO_DISABLE_ECN") == "" {
 		os.Setenv("QUIC_GO_DISABLE_ECN", "true")
 	}
+	// Workaround for Go 1.24 netpoll regression on older kernels (issue #5587)
+	if v := os.Getenv("GODEBUG"); v == "" {
+		os.Setenv("GODEBUG", "netpoll2=0")
+	} else {
+		os.Setenv("GODEBUG", v+",netpoll2=0")
+	}
 }
 
 type cancelErr struct {
